@@ -1,0 +1,91 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('posts');
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: post,
+	}));
+}
+type Props = CollectionEntry<'posts'>;
+
+const post = Astro.props;
+const { Content, headings } = await render(post);
+
+// Get related posts
+const allPosts = await getCollection('posts');
+const relatedPosts = allPosts
+    .filter(p => p.data.category === post.data.category && p.id !== post.id)
+    .slice(0, 3);
+---
+
+<Layout title={post.data.title} description={post.data.description} articleData={post.data}>
+    <article class="max-w-7xl mx-auto px-6 py-16">
+        <div class="max-w-4xl mx-auto">
+            <header class="mb-12 text-center flex flex-col items-center">
+                <span class="bg-crypto-accent/20 text-crypto-accent px-4 py-1.5 rounded-full font-bold text-sm tracking-wider uppercase inline-block mb-6 border border-crypto-accent/30">{post.data.category}</span>
+                <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">{post.data.title}</h1>
+                <div class="flex items-center justify-center gap-4 text-crypto-muted font-mono bg-crypto-card inline-flex px-6 py-2 rounded-lg border border-crypto-border flex-wrap">
+                    <span>{post.data.pubDate.toLocaleDateString('en-us', { month: 'long', day: 'numeric', year: 'numeric'})}</span>
+                    <span>•</span>
+                    <span class="text-crypto-primary">{post.data.readTime}</span>
+                </div>
+            </header>
+
+            {post.data.heroImage && (
+                <div class="w-full aspect-video rounded-2xl overflow-hidden mb-16 border border-crypto-border shadow-2xl relative">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+                    <Image src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover" />
+                </div>
+            )}
+
+            <div class="flex flex-col lg:flex-row gap-12 relative w-full">
+                <!-- Table of Contents Sidebar -->
+                <aside class="lg:w-64 flex-shrink-0 order-2 lg:order-1 hidden md:block">
+                    <div class="sticky top-32 glass-card p-6">
+                        <h4 class="text-lg font-bold mb-4 border-b border-crypto-border pb-2 text-white">Contents</h4>
+                        <ul class="space-y-3 text-sm">
+                            {headings.map(heading => (
+                                <li class={`pl-[${(heading.depth - 2) * 1}rem]`}>
+                                    <a href={`#${heading.slug}`} class="text-crypto-muted hover:text-crypto-primary transition-colors block leading-tight">{heading.text}</a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </aside>
+
+                <!-- Markdown Content -->
+                <div class="prose flex-grow order-1 lg:order-2 w-full">
+                    <Content />
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Related Posts -->
+    {relatedPosts.length > 0 && (
+        <section class="max-w-7xl mx-auto px-6 py-20 border-t border-crypto-border/50">
+            <h3 class="text-3xl font-extrabold mb-10 text-center">Related <span class="text-crypto-primary">Articles</span></h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center max-w-5xl mx-auto w-full">
+                {relatedPosts.map((related) => (
+                    <a href={`/blog/${related.id}/`} class="glass-card overflow-hidden group flex flex-col border border-crypto-border w-full">
+                        <div class="w-full h-40 overflow-hidden border-b border-crypto-border">
+                            {related.data.heroImage && (
+                                <Image src={related.data.heroImage} alt={related.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                            )}
+                        </div>
+                        <div class="p-6 w-full flex-grow flex flex-col">
+                            <span class="text-crypto-accent text-[10px] font-black uppercase tracking-wider mb-2 block">{related.data.category}</span>
+                            <h4 class="text-lg font-bold mb-2 group-hover:text-crypto-primary">{related.data.title}</h4>
+                            <span class="text-crypto-muted text-xs mt-auto">{related.data.readTime}</span>
+                        </div>
+                    </a>
+                ))}
+            </div>
+        </section>
+    )}
+</Layout>

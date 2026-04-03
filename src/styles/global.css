@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-crypto-bg: #0b0f19;
+  --color-crypto-card: #151b2b;
+  --color-crypto-card-hover: #1e2638;
+  --color-crypto-primary: #00FF41;
+  --color-crypto-accent: #00cc34;
+  --color-crypto-border: rgba(0, 255, 65, 0.15);
+  --color-crypto-text: #f8fafc;
+  --color-crypto-muted: #94a3b8;
+  
+  --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-crypto-bg text-crypto-text font-sans antialiased;
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-crypto-card border border-crypto-border backdrop-blur-md rounded-xl transition-all duration-300 shadow-lg shadow-black/40;
+  }
+  .glass-card:hover {
+    @apply bg-crypto-card-hover border-white/20 shadow-xl shadow-black/60 -translate-y-1;
+  }
+  .gradient-text {
+    @apply bg-gradient-to-r from-crypto-primary to-crypto-accent bg-clip-text text-transparent;
+  }
+}
+
+/* Markdown Reset */
+.prose {
+  @apply text-crypto-text/90 leading-relaxed max-w-[800px] w-full;
+}
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  @apply text-white font-bold mt-10 mb-5 tracking-tight;
+}
+.prose h1 { @apply text-4xl mb-6; }
+.prose h2 { @apply text-3xl border-b border-crypto-border pb-2; }
+.prose h3 { @apply text-2xl; }
+.prose p { @apply mb-6 text-lg; }
+.prose a { @apply text-crypto-primary relative underline decoration-crypto-primary/30 underline-offset-4 hover:decoration-crypto-primary transition-all; }
+.prose pre { @apply p-5 rounded-xl bg-black border border-crypto-border overflow-x-auto mb-8 shadow-inner; }
+.prose code { @apply font-mono text-sm bg-crypto-card px-1.5 py-0.5 rounded text-crypto-primary; }
+.prose pre code { @apply bg-transparent p-0 text-inherit; }
+.prose ul, .prose ol { @apply mb-6 pl-5 space-y-2 text-lg; }
+.prose ul { @apply list-disc; }
+.prose ol { @apply list-decimal; }
+.prose blockquote { @apply border-l-4 border-crypto-accent pl-5 italic text-crypto-muted my-8 bg-crypto-card/50 py-3 pr-5 rounded-r-xl; }
+.prose img { @apply rounded-2xl border border-crypto-border my-10 w-full shadow-2xl; }
+.prose table { @apply w-full mb-8 border-collapse text-left; }
+.prose th { @apply p-3 border-b-2 border-crypto-border bg-crypto-card font-bold; }
+.prose td { @apply p-3 border-b border-crypto-border; }

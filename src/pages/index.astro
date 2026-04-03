@@ -1,0 +1,190 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+const allPosts = (await getCollection('posts'))
+    .filter(post => !post.data.draft)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const latestPosts = allPosts.slice(0, 3);
+const featuredPosts = allPosts.filter(p => p.data.tags.includes('Featured')).slice(0, 2);
+if (featuredPosts.length === 0) featuredPosts.push(...allPosts.slice(3, 5));
+
+const categories = [
+    { name: 'Mining Hardware', slug: 'mining-hardware', icon: 'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z' },
+    { name: 'Pool Reviews', slug: 'pool-reviews', icon: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4M12 11v6' },
+    { name: 'Crypto Insights', slug: 'crypto-insights', icon: 'M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z' }
+];
+---
+
+<Layout title="MinerPool | The Topical Authority on Crypto Mining" description="Expert reviews, profitability calculators, and deep technical intelligence for Bitcoin and ASIC mining infrastructures.">
+    {/* HERO SECTION */}
+    <section class="relative pt-24 pb-32 overflow-hidden flex items-center min-h-[85vh]">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-crypto-primary/20 via-crypto-bg to-crypto-bg z-0 pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10 w-full flex flex-col md:flex-row items-center gap-16">
+            <div class="w-full md:w-3/5">
+                <span class="bg-crypto-card border border-crypto-primary/50 text-crypto-primary py-1.5 px-4 rounded-full text-xs font-bold tracking-widest uppercase mb-8 inline-block shadow-[0_0_15px_rgba(0,255,65,0.2)]">#1 Crypto Mining Intelligence</span>
+                <h1 class="text-5xl lg:text-7xl font-black text-white leading-[1.1] mb-8 tracking-tight">
+                    The Future of <br/> <span class="text-transparent bg-clip-text bg-gradient-to-r from-crypto-primary to-green-300 drop-shadow-[0_0_15px_rgba(0,255,65,0.4)]">Crypto Mining</span>
+                </h1>
+                <p class="text-xl text-crypto-text mb-10 max-w-2xl leading-relaxed border-l-4 border-crypto-primary pl-6 py-2">
+                    Architecting the decentralized frontier. Discover elite ASIC hardware benchmarks, profitable stratum pools, and macro-hashrate intelligence.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="/category/mining-hardware" class="bg-crypto-primary text-black font-extrabold px-8 py-4 rounded-xl hover:bg-green-400 transition-colors shadow-[0_4px_20px_rgba(0,255,65,0.4)] text-center text-lg">Compare ASICs</a>
+                    <a href="/calculator" class="bg-crypto-bg border border-crypto-primary text-crypto-primary font-extrabold px-8 py-4 rounded-xl hover:bg-crypto-primary/10 transition-colors text-center text-lg shadow-[0_4px_20px_rgba(0,255,65,0.1)]">Calculate Profitability</a>
+                </div>
+                
+                <div class="mt-12 pt-8 border-t border-crypto-border flex items-center justify-start gap-8">
+                    <div class="flex flex-col">
+                        <span class="text-3xl font-black text-white">400+</span>
+                        <span class="text-crypto-muted text-xs uppercase tracking-widest font-bold">ASICs Logged</span>
+                    </div>
+                    <div class="flex flex-col border-l border-crypto-border pl-8">
+                        <span class="text-3xl font-black text-white flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-crypto-primary animate-pulse"></span>Live</span>
+                        <span class="text-crypto-muted text-xs uppercase tracking-widest font-bold">Realtime Calcs</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hidden lg:flex w-full md:w-2/5 justify-end relative">
+                <div class="absolute inset-0 bg-crypto-primary/10 blur-[100px] w-full h-full rounded-full pointer-events-none"></div>
+                <div class="w-full max-w-md aspect-square rounded-3xl bg-crypto-card border border-crypto-border shadow-2xl overflow-hidden relative overflow-hidden group border-x border-y border-x-crypto-primary/50">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10 flex flex-col justify-end p-8">
+                        <span class="bg-crypto-primary text-black text-xs font-black px-3 py-1 uppercase tracking-widest rounded w-max mb-3">Trending Tool</span>
+                        <h3 class="text-2xl font-bold text-white mb-2">ROI Simulator V2</h3>
+                        <p class="text-crypto-muted text-sm mb-6">Instantly map your operational expenditures against global network hashrates.</p>
+                        <a href="/calculator" class="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-center py-3 rounded-lg font-bold backdrop-blur-md transition-colors flex items-center justify-center gap-2">Launch Protocol <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg></a>
+                    </div>
+                    <div class="absolute inset-0 z-0 bg-[url('/hero-bg-abstract.jpg')] bg-cover bg-center group-hover:scale-110 transition-transform duration-[2s] ease-out opacity-40"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {/* TOPICAL CATEGORY HUBS */}
+    <section class="max-w-7xl mx-auto px-6 py-20 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 -mt-24">
+            {categories.map(cat => (
+                <a href={`/category/${cat.slug}`} class="bg-crypto-card border border-crypto-border hover:border-crypto-primary p-8 rounded-2xl shadow-xl transition-all hover:-translate-y-2 group flex flex-col items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-crypto-bg border border-crypto-border flex items-center justify-center text-crypto-primary mb-6 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(0,255,65,0.3)] transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={cat.icon} /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">{cat.name}</h3>
+                    <p class="text-crypto-muted text-sm">Deep-dive strategies and intelligence metrics mapped specifically for {cat.name.toLowerCase()}.</p>
+                </a>
+            ))}
+        </div>
+    </section>
+
+    {/* LATEST INTELLIGENCE (LATEST POSTS) */}
+    <section class="max-w-7xl mx-auto px-6 py-24">
+        <div class="flex justify-between items-end mb-12 border-b border-crypto-border pb-6">
+            <div>
+                <h2 class="text-4xl font-black text-white">Latest Intelligence</h2>
+                <p class="text-crypto-muted mt-2">Real-time deployments across the mining sector.</p>
+            </div>
+            <a href="/blog" class="text-crypto-primary hover:text-white font-bold hidden md:flex items-center gap-2 transition-colors">View Archives <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg></a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {latestPosts.map(post => (
+                 <a href={`/blog/${post.id}/`} class="glass-card overflow-hidden group flex flex-col border border-crypto-border transition-all hover:border-crypto-primary/50 hover:shadow-[0_0_20px_rgba(0,255,65,0.1)] hover:-translate-y-1">
+                    <div class="w-full h-52 overflow-hidden border-b border-crypto-border relative">
+                        <div class="absolute top-4 left-4 z-10">
+                            <span class="bg-black/80 backdrop-blur border border-crypto-primary text-crypto-primary px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest">{post.data.category}</span>
+                        </div>
+                        {post.data.heroImage ? (
+                            <Image src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                            <div class="w-full h-full bg-crypto-bg border-b border-crypto-border/50"></div>
+                        )}
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col pt-6">
+                        <h4 class="text-xl font-bold text-white mb-3 group-hover:text-crypto-primary transition-colors leading-snug">{post.data.title}</h4>
+                        <p class="text-crypto-muted text-sm line-clamp-3 mb-6 flex-grow">{post.data.description}</p>
+                        <div class="flex items-center justify-between text-xs font-mono text-crypto-text mt-auto pt-4 border-t border-crypto-border/50">
+                            <span>{post.data.pubDate.toLocaleDateString('en-us', { month: 'short', day: 'numeric', year: 'numeric'})}</span>
+                            <span class="text-crypto-primary">{post.data.readTime}</span>
+                        </div>
+                    </div>
+                </a>
+            ))}
+        </div>
+        <a href="/blog" class="md:hidden mt-8 w-full block text-center bg-crypto-card border border-crypto-border text-white py-4 rounded-xl font-bold">Browse All Articles</a>
+    </section>
+
+    {/* MONETIZATION / COMPARISON HIGHLIGHTS BLOCK */}
+    <section class="border-y border-crypto-border bg-gradient-to-r from-crypto-card to-crypto-bg py-24">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+                <span class="text-crypto-primary font-bold tracking-widest uppercase text-sm mb-4 block">Hardware Intelligence</span>
+                <h2 class="text-4xl font-black text-white mb-6">Don't Overpay for Hashrate.</h2>
+                <p class="text-crypto-muted text-lg mb-8 leading-relaxed">We maintain the most rigorous database of ASIC profitability metrics online. Compare J/TH efficiency rates, warranty lengths, and hidden cooling costs before deploying infrastructure capital.</p>
+                <div class="space-y-4">
+                    <a href="/blog" class="flex items-center gap-4 group p-4 border border-crypto-border bg-crypto-bg rounded-xl hover:border-crypto-primary transition-colors">
+                        <span class="w-12 h-12 rounded-lg bg-crypto-primary/10 border border-crypto-primary flex items-center justify-center text-crypto-primary group-hover:scale-110 transition-transform">
+                            <span class="font-black">1</span>
+                        </span>
+                        <div>
+                            <h4 class="text-white font-bold mb-1 group-hover:text-crypto-primary transition-colors">Antminer S21 Series Review</h4>
+                            <p class="text-crypto-muted text-xs">Is the premium price worth the 17.5 J/TH efficiency?</p>
+                        </div>
+                    </a>
+                    <a href="/blog" class="flex items-center gap-4 group p-4 border border-crypto-border bg-crypto-bg rounded-xl hover:border-crypto-primary transition-colors">
+                        <span class="w-12 h-12 rounded-lg bg-crypto-primary/10 border border-crypto-primary flex items-center justify-center text-crypto-primary group-hover:scale-110 transition-transform">
+                            <span class="font-black">2</span>
+                        </span>
+                        <div>
+                            <h4 class="text-white font-bold mb-1 group-hover:text-crypto-primary transition-colors">Whatsminer M50S++ Analysis</h4>
+                            <p class="text-crypto-muted text-xs">Built for extreme heat: the water-cooled champion.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="absolute inset-0 bg-crypto-primary/5 blur-[100px] rounded-full z-0 pointer-events-none"></div>
+                {/* Simulated Spec Table via MDX Component Demo */}
+                <div class="relative z-10 border border-crypto-primary/30 bg-crypto-card rounded-2xl shadow-[0_0_40px_rgba(0,255,65,0.1)] overflow-hidden">
+                    <div class="bg-crypto-bg border-b border-crypto-border p-6 flex justify-between items-center">
+                        <span class="font-bold text-white text-lg">Top ROI Models</span>
+                        <span class="text-xs text-crypto-primary animate-pulse">Live Updating</span>
+                    </div>
+                    <table class="w-full text-left">
+                        <thead><tr class="text-crypto-muted text-xs uppercase tracking-widest"><th class="p-4 pl-6">Model</th><th class="p-4">TH/s</th><th class="p-4">Watts</th><th class="p-4 text-right pr-6">Cost</th></tr></thead>
+                        <tbody class="divide-y divide-crypto-border text-sm">
+                            <tr class="hover:bg-crypto-primary/5">
+                                <td class="p-4 pl-6 font-bold text-white">Antminer S21</td><td class="p-4 text-crypto-text font-mono">200</td><td class="p-4 text-crypto-text font-mono">3500</td><td class="p-4 text-right pr-6 text-crypto-primary font-mono">$4,999</td>
+                            </tr>
+                            <tr class="hover:bg-crypto-primary/5">
+                                <td class="p-4 pl-6 font-bold text-white">Whatsminer M50S</td><td class="p-4 text-crypto-text font-mono">114</td><td class="p-4 text-crypto-text font-mono">3306</td><td class="p-4 text-right pr-6 text-crypto-primary font-mono">$1,850</td>
+                            </tr>
+                            <tr class="hover:bg-crypto-primary/5 pb-2">
+                                <td class="p-4 pl-6 font-bold text-white">Canaan Avalon A1366</td><td class="p-4 text-crypto-text font-mono">130</td><td class="p-4 text-crypto-text font-mono">3250</td><td class="p-4 text-right pr-6 text-crypto-primary font-mono">$2,100</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="p-4 bg-crypto-bg/50 border-t border-crypto-border text-center">
+                         <a href="/category/mining-hardware" class="text-crypto-muted text-xs hover:text-crypto-primary transition-colors underline underline-offset-4 tracking-widest uppercase">View Full Rankings</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {/* TRUST & NEWSLETTER BLOCK */}
+    <section class="max-w-4xl mx-auto px-6 py-32 text-center">
+        <div class="w-20 h-20 mx-auto bg-crypto-card border border-crypto-primary rounded-2xl flex items-center justify-center text-crypto-primary shadow-[0_0_30px_rgba(0,255,65,0.2)] rotate-3 mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 -rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5M10 12l2.25-1.5M14 12l-2.25-1.5M12 10.5v-1.5" /></svg>
+        </div>
+        <h2 class="text-4xl font-extrabold text-white mb-6">Join 15,000+ Institutional Miners</h2>
+        <p class="text-crypto-muted text-lg mb-10 max-w-2xl mx-auto">Get zero-fluff hardware analysis, upcoming node pool alerts, and raw macro data dispatched to your terminal weekly.</p>
+        
+        <form class="flex flex-col sm:flex-row max-w-xl mx-auto gap-4" onsubmit="event.preventDefault();">
+            <input type="email" placeholder="mining@facility.com" class="flex-grow bg-crypto-card border border-crypto-border text-white px-6 py-4 rounded-xl focus:border-crypto-primary focus:ring-1 focus:ring-crypto-primary outline-none font-mono placeholder:font-sans transition-all" required />
+            <button type="submit" class="bg-crypto-primary text-black font-extrabold px-8 py-4 rounded-xl hover:bg-green-400 transition-colors shadow-[0_4px_15px_rgba(0,255,65,0.3)] whitespace-nowrap">Subscribe Free</button>
+        </form>
+        <p class="text-[10px] text-crypto-muted mt-6 uppercase tracking-widest font-bold">100% Privacy. Zero Spam. One-Click Unsubscribe.</p>
+    </section>
+</Layout>

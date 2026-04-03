@@ -1,0 +1,18 @@
+---
+export interface Props {
+    author: string;
+    role?: string;
+}
+const { author, role = "Editor" } = Astro.props;
+---
+<div class="my-8 flex items-start gap-4 p-6 bg-crypto-bg border border-crypto-border rounded-xl">
+    <div class="w-12 h-12 rounded-full bg-crypto-card flex items-center justify-center border border-crypto-primary/50 text-crypto-primary flex-shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+    </div>
+    <div>
+        <h5 class="text-white font-bold m-0 text-sm uppercase tracking-wider leading-none">{author} <span class="text-crypto-muted font-normal">| {role}</span></h5>
+        <div class="text-crypto-text italic mt-2 text-sm m-0 p-0">
+            "<slot />"
+        </div>
+    </div>
+</div>

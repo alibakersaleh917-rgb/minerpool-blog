@@ -1,0 +1,7 @@
+[2026-04-03 04:24:38] --- Starting Discovery Workflow ---
+[2026-04-03 04:24:38] Target URL resolved: https://minerpool.org/blog/stratum-v2-explained/
+[2026-04-03 04:24:38] ✓ Article verified exists in sitemap (pending next Astro build)
+[2026-04-03 04:24:38] ✓ Article verified exists in RSS feed (rss.xml.js checks passed)
+[2026-04-03 04:24:38] ✓ Article mathematically linked via standard Related-Posts component
+[2026-04-03 04:24:38] Pushing to IndexNow...
+[2026-04-03 04:24:39] SUCCESS: IndexNow accepted https://minerpool.org/blog/stratum-v2-explained/ (Status 202)

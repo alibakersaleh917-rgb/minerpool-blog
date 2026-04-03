@@ -1,0 +1,92 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  canonicalURL?: string;
+  articleData?: any;
+}
+
+const { 
+    title, 
+    description, 
+    image = '/default-og.jpg', 
+    canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://minerpool.org').href,
+    articleData
+} = Astro.props;
+
+// Construct Breadcrumbs
+const paths = Astro.url.pathname.split('/').filter(p => p !== '');
+const breadcrumbs = [
+  { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://minerpool.org" },
+  ...paths.map((path, idx) => ({
+    "@type": "ListItem",
+    "position": idx + 2,
+    "name": path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, ' '),
+    "item": `https://minerpool.org/${paths.slice(0, idx + 1).join('/')}/`
+  }))
+];
+
+const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "MinerPool",
+    "url": "https://minerpool.org",
+    "logo": "https://minerpool.org/default-og.jpg"
+};
+
+const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": breadcrumbs
+};
+
+let articleSchema = null;
+if (articleData) {
+    articleSchema = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": articleData.title,
+        "description": articleData.description,
+        "image": [
+            new URL(articleData.heroImage || image, Astro.site || 'https://minerpool.org').href
+        ],
+        "datePublished": articleData.pubDate,
+        "dateModified": articleData.updatedDate || articleData.pubDate,
+        "author": [{
+            "@type": "Person",
+            "name": articleData.author || "MinerPool Editor",
+            "url": "https://minerpool.org/about/"
+        }],
+        "publisher": {
+            "@type": "Organization",
+            "name": "MinerPool",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://minerpool.org/default-og.jpg"
+            }
+        }
+    };
+}
+---
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- OpenGraph Tags -->
+<meta property="og:type" content={articleData ? "article" : "website"} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={new URL(articleData?.heroImage || image, Astro.site || Astro.url)} />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={new URL(articleData?.heroImage || image, Astro.site || Astro.url)} />
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(organizationSchema)}></script>
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}></script>
+{articleSchema && <script type="application/ld+json" set:html={JSON.stringify(articleSchema)}></script>}

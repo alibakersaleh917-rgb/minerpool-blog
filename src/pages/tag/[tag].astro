@@ -1,0 +1,63 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+export async function getStaticPaths() {
+    const allPosts = await getCollection('posts');
+    const publishedPosts = allPosts.filter(post => !post.data.draft);
+    
+    // Extract unique tags
+    const uniqueTags = [...new Set(publishedPosts.map((post) => post.data.tags).flat())];
+
+    return uniqueTags.map((tag) => {
+        const filteredPosts = publishedPosts
+            .filter((post) => post.data.tags.includes(tag))
+            .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+            
+        return {
+            params: { tag: tag.toLowerCase().replace(/\s+/g, '-') },
+            props: { tag, posts: filteredPosts },
+        };
+    });
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<Layout title={`Topics on ${tag} | Minerpool`} description={`Browse all mining intelligence and architectures regarding ${tag}.`}>
+    <div class="max-w-7xl mx-auto px-6 py-20">
+        <header class="text-center mb-16 cursor-default">
+            <span class="text-crypto-primary font-black uppercase tracking-widest text-sm mb-4 block">Tag Archive</span>
+            <h1 class="text-5xl md:text-6xl font-extrabold text-white mb-6">Topic: <span class="border-b-4 border-crypto-primary pb-2 inline-block">{tag}</span></h1>
+            <p class="text-crypto-muted text-lg max-w-2xl mx-auto">Found {posts.length} {posts.length === 1 ? 'article' : 'articles'} mapping to this semantic tag.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {posts.map((post) => (
+                <a href={`/blog/${post.id}/`} class="glass-card overflow-hidden group flex flex-col border border-crypto-border transition-all hover:border-crypto-primary/50 hover:shadow-[0_0_20px_rgba(0,255,65,0.1)] hover:-translate-y-1">
+                    <div class="w-full h-48 overflow-hidden border-b border-crypto-border relative">
+                        <div class="absolute top-4 left-4 z-10 flex gap-2">
+                            <span class="bg-black/80 backdrop-blur border border-crypto-primary text-crypto-primary px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest">{post.data.category}</span>
+                        </div>
+                        {post.data.heroImage ? (
+                            <Image src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                            <div class="w-full h-full bg-crypto-bg border-b border-crypto-border/50 flex text-crypto-border items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" /></svg>
+                            </div>
+                        )}
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col pt-6">
+                        <h4 class="text-xl font-bold text-white mb-3 group-hover:text-crypto-primary transition-colors leading-snug">{post.data.title}</h4>
+                        <p class="text-crypto-muted text-sm line-clamp-3 mb-6 flex-grow">{post.data.description}</p>
+                        <div class="flex items-center justify-between text-xs font-mono text-crypto-text mt-auto pt-4 border-t border-crypto-border/50">
+                            <span>{post.data.pubDate.toLocaleDateString('en-us', { month: 'short', day: 'numeric', year: 'numeric'})}</span>
+                            <span class="text-crypto-primary">{post.data.readTime}</span>
+                        </div>
+                    </div>
+                </a>
+            ))}
+        </div>
+    </div>
+</Layout>

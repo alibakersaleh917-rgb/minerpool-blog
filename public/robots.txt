@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://minerpool.org/sitemap-index.xml

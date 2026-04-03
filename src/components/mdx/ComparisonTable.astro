@@ -1,0 +1,27 @@
+---
+export interface Props {
+    headers: string[];
+    rows: string[][];
+    title?: string;
+}
+const { headers = [], rows = [], title } = Astro.props;
+---
+<div class="my-10 w-full overflow-x-auto border border-crypto-border rounded-xl bg-crypto-card shadow-lg">
+    {title && <div class="bg-crypto-bg border-b border-crypto-border px-6 py-4 font-extrabold text-white text-lg">{title}</div>}
+    <table class="w-full text-left border-collapse m-0">
+        <thead>
+            <tr class="bg-crypto-bg/50 border-b border-crypto-border">
+                {headers.map((h, i) => <th class={`p-4 text-sm uppercase tracking-widest text-crypto-muted font-bold ${i===0?'pl-6':''}`}>{h}</th>)}
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-crypto-border/50">
+            {rows.map((row, index) => (
+                <tr class="hover:bg-crypto-border/20 transition-colors">
+                    {row.map((cell, i) => (
+                        <td class={`p-4 text-sm text-crypto-text ${i===0?'pl-6 font-bold text-white':''} ${cell === 'Yes' ? 'text-crypto-primary font-bold' : cell === 'No' ? 'text-red-400' : ''}`} set:html={cell} />
+                    ))}
+                </tr>
+            ))}
+        </tbody>
+    </table>
+</div>

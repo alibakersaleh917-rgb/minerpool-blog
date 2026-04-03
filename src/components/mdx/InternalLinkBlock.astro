@@ -1,0 +1,16 @@
+---
+export interface Props {
+    title: string;
+    url: string;
+    description?: string;
+}
+const { title, url, description } = Astro.props;
+---
+<a href={url} class="group block my-8 border-l-4 border-crypto-primary bg-crypto-card p-5 rounded-r-xl hover:bg-crypto-border/20 transition-colors not-prose border-t border-r border-b border-t-crypto-border border-r-crypto-border border-b-crypto-border">
+    <span class="text-[10px] uppercase tracking-widest text-crypto-muted font-bold block mb-1">Related Guide</span>
+    <h5 class="text-white font-extrabold text-base m-0 group-hover:text-crypto-primary transition-colors flex items-center justify-between">
+        {title}
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-crypto-muted group-hover:text-crypto-primary transform group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+    </h5>
+    {description && <p class="text-crypto-muted text-sm mt-2 mb-0">{description}</p>}
+</a>

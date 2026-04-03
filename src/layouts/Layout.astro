@@ -1,0 +1,91 @@
+---
+import '../styles/global.css';
+import CryptoTicker from '../components/CryptoTicker.jsx';
+import SEO from '../components/SEO.astro';
+
+interface Props {
+	title: string;
+	description?: string;
+	articleData?: any;
+}
+
+const { title, description = "Minerpool Crypto Blog", articleData } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<title>{title} | Minerpool</title>
+		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+        <SEO title={title} description={description} articleData={articleData} />
+	</head>
+	<body class="bg-crypto-bg text-crypto-text font-sans antialiased min-h-screen flex flex-col relative">
+        <CryptoTicker client:load />
+
+        <!-- Glow Orbs -->
+        <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+            <div class="absolute -top-[10%] left-[10%] w-[40vw] h-[40vw] rounded-full blur-[100px] opacity-20 bg-crypto-primary/40 animate-pulse"></div>
+            <div class="absolute -bottom-[10%] -right-[10%] w-[50vw] h-[50vw] rounded-full blur-[100px] opacity-20 bg-crypto-accent/40 animate-pulse" style="animation-delay: 2s;"></div>
+        </div>
+        
+		<nav class="sticky top-0 z-50 backdrop-blur-xl border-b border-crypto-border bg-crypto-bg/90 relative">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="/" class="text-2xl font-extrabold flex items-center gap-2 relative z-20">
+                    <span class="text-crypto-primary text-3xl">⬡</span>
+                    <span>Minerpool<span class="text-crypto-primary">Blog</span></span>
+                </a>
+                
+                <input type="checkbox" id="mobile-menu-toggle" class="peer hidden" />
+                <label for="mobile-menu-toggle" class="md:hidden text-white cursor-pointer relative z-20 p-2 border border-crypto-border rounded-md hover:bg-crypto-card transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </label>
+
+                <ul class="fixed inset-0 bg-crypto-bg/95 flex-col justify-center items-center gap-8 text-xl font-bold text-crypto-text hidden peer-checked:flex md:peer-checked:flex md:static md:bg-transparent md:flex-row md:justify-end md:gap-8 md:text-sm md:font-semibold md:text-crypto-muted md:flex z-10">
+                    <li><a href="/" class="hover:text-crypto-primary transition-colors">Home</a></li>
+                    <li><a href="/blog" class="hover:text-crypto-primary transition-colors">Blog</a></li>
+                    <li><a href="/calculator" class="hover:text-crypto-primary transition-colors">Tools</a></li>
+                    <li><a href="#" class="hover:text-crypto-primary transition-colors">About</a></li>
+                    <li class="md:hidden mt-4"><a href="#" class="bg-crypto-primary hover:bg-green-500 text-black px-8 py-3 rounded-lg font-bold shadow-[0_0_15px_rgba(0,255,65,0.4)] block text-center">Join Pool</a></li>
+                </ul>
+
+                <a href="#" class="hidden md:block bg-crypto-primary hover:bg-green-500 text-black px-6 py-2 rounded-lg font-extrabold transition-transform hover:-translate-y-0.5 shadow-[0_0_15px_rgba(0,255,65,0.4)] relative z-20">Join Pool</a>
+            </div>
+        </nav>
+
+        <main class="flex-grow z-10">
+		    <slot />
+        </main>
+
+        <footer class="border-t border-crypto-border mt-20 bg-crypto-bg/90 py-12">
+            <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <a href="/" class="text-2xl font-extrabold flex items-center gap-2 mb-4">
+                        <span class="text-crypto-primary text-3xl">⬡</span>
+                        Minerpool
+                    </a>
+                    <p class="text-crypto-muted">Empowering the decentralized future. Dedicated to high-performance mining pools since 2018.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-crypto-muted">
+                        <li><a href="#" class="hover:text-white transition-colors">API Docs</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Status</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-crypto-muted">
+                        <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+	</body>
+</html>

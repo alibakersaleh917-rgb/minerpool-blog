@@ -1,0 +1,132 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+
+export async function getStaticPaths() {
+    const allPosts = await getCollection('posts');
+    const categories = ['Mining Hardware', 'Pool Reviews', 'Crypto Insights'];
+    
+    return categories.map(category => {
+        const filteredPosts = allPosts
+            .filter(post => post.data.category === category && !post.data.draft)
+            .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+        return {
+            params: { category: category.toLowerCase().replace(/\s+/g, '-') },
+            props: { category, posts: filteredPosts },
+        };
+    });
+}
+
+const { category, posts } = Astro.props;
+
+const seoTitles = {
+    'Mining Hardware': 'Best Crypto Mining Hardware Reviews & ASIC Comparisons',
+    'Pool Reviews': 'Top Bitcoin & Crypto Mining Pool Reviews, Fees & Payouts',
+    'Crypto Insights': 'Deep Crypto Mining Insights, Profitability & Hashes',
+};
+
+const seoDescriptions = {
+    'Mining Hardware': 'In-depth reviews, specifications, and ROI calculations for the latest ASIC miners, GPUs, and enterprise mining hardware configurations.',
+    'Pool Reviews': 'Compare the most profitable cryptocurrency mining pools. Analyze PPS+, PPLNS, server locations, and hidden fees before connecting your hashrate.',
+    'Crypto Insights': 'Actionable crypto mining market analysis, network difficulty trends, stratum protocol mechanics, and energy optimizations for serious miners.',
+};
+
+const introCopy = {
+    'Mining Hardware': 'Selecting the right hardware dictates your fundamental ROI. From the latest Bitmain Antminers to efficient GPU rigs, we benchmark actual hashrates, evaluate cooling arrays, and decode the true electrical overhead so you can scale profitability.',
+    'Pool Reviews': 'Your hashrate is only as good as the pool processing it. We continuously monitor stratum servers, verify actual payout proofs, and audit fee structures to ensure you are compounding capital on the most secure and lucrative nodes available.',
+    'Crypto Insights': 'Mining is an arms race against global network difficulty. Dive deep into the macro-economics, firmware optimizations, power grid negotiations, and architectural upgrades driving the next generation of decentralized hashing.',
+};
+
+const featuredPost = posts[0];
+const recentPosts = posts.slice(1);
+---
+
+<Layout title={`${seoTitles[category]} | MinerPool`} description={seoDescriptions[category]}>
+    <div class="max-w-7xl mx-auto px-6 py-16">
+        
+        {/* Hub Header */}
+        <header class="text-center mb-16 relative">
+            <div class="absolute inset-0 bg-crypto-primary/5 blur-[120px] rounded-full z-0 pointer-events-none"></div>
+            <div class="relative z-10">
+                <span class="text-crypto-accent font-black uppercase tracking-widest text-sm mb-4 block">Topical Hub</span>
+                <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">{category}</h1>
+                <p class="text-lg md:text-xl text-crypto-muted max-w-3xl mx-auto leading-relaxed border-l-4 border-crypto-primary pl-6 text-left bg-crypto-card py-4 pr-6 rounded-r-xl border-y border-r border-y-crypto-border border-r-crypto-border shadow-lg">
+                    {introCopy[category]}
+                </p>
+            </div>
+        </header>
+
+        {/* Featured Post Highlight */}
+        {featuredPost && (
+            <section class="mb-20">
+                <h2 class="text-3xl font-extrabold text-white mb-8 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-crypto-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                    Featured Pillar Guide
+                </h2>
+                <a href={`/blog/${featuredPost.id}/`} class="group block relative rounded-3xl overflow-hidden border border-crypto-border shadow-2xl bg-crypto-card transition-transform hover:-translate-y-2">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[400px]">
+                        <div class="p-10 lg:p-14 flex flex-col justify-center relative z-10 order-2 lg:order-1">
+                            <div class="flex gap-2 mb-4 flex-wrap">
+                                {featuredPost.data.tags.slice(0,2).map(t => <span class="bg-crypto-bg border border-crypto-primary/50 text-crypto-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">{t}</span>)}
+                            </div>
+                            <h3 class="text-4xl font-extrabold text-white mb-4 group-hover:text-crypto-primary transition-colors leading-tight">{featuredPost.data.title}</h3>
+                            <p class="text-crypto-muted text-lg mb-8 line-clamp-3">{featuredPost.data.description}</p>
+                            <div class="flex items-center gap-4 text-crypto-text font-mono text-sm mt-auto">
+                                <span class="bg-crypto-bg px-4 py-2 rounded-lg border border-crypto-border text-crypto-primary font-bold">{featuredPost.data.readTime}</span>
+                                <span>{featuredPost.data.pubDate.toLocaleDateString('en-us', { month: 'short', day: 'numeric', year: 'numeric'})}</span>
+                            </div>
+                        </div>
+                        <div class="w-full h-64 lg:h-full relative order-1 lg:order-2 border-b lg:border-b-0 lg:border-l border-crypto-border">
+                            <div class="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-crypto-card to-transparent z-10 w-1/3"></div>
+                            {featuredPost.data.heroImage ? (
+                                <Image src={featuredPost.data.heroImage} alt={featuredPost.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                            ) : (
+                                <div class="w-full h-full bg-crypto-bg flex items-center justify-center text-crypto-border">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </a>
+            </section>
+        )}
+
+        {/* Recent Archive Grid */}
+        {recentPosts.length > 0 && (
+            <section class="mb-20">
+                <h2 class="text-3xl font-extrabold text-white mb-8 border-b border-crypto-border pb-4 w-full flex justify-between items-end">
+                    Latest in {category}
+                    <span class="text-sm font-mono text-crypto-muted bg-crypto-card px-3 py-1 rounded-lg border border-crypto-border">{recentPosts.length} Articles</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {recentPosts.map((post) => (
+                        <a href={`/blog/${post.id}/`} class="glass-card overflow-hidden group flex flex-col border border-crypto-border transition-all hover:border-crypto-primary/50 hover:shadow-[0_0_20px_rgba(0,255,65,0.1)] hover:-translate-y-1">
+                            <div class="w-full h-48 overflow-hidden border-b border-crypto-border relative">
+                                <div class="absolute top-4 left-4 z-10 flex gap-2">
+                                    {post.data.tags.slice(0,1).map(t => <span class="bg-black/80 backdrop-blur-sm border border-crypto-primary text-crypto-primary px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">{t}</span>)}
+                                </div>
+                                {post.data.heroImage ? (
+                                    <Image src={post.data.heroImage} alt={post.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                ) : (
+                                    <div class="w-full h-full bg-crypto-bg"></div>
+                                )}
+                            </div>
+                            <div class="p-6 flex-grow flex flex-col pt-8 relative">
+                                <div class="absolute -top-5 right-6 w-10 h-10 rounded-full bg-crypto-bg border border-crypto-border flex items-center justify-center text-crypto-primary shadow-lg z-10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                </div>
+                                <h4 class="text-xl font-bold text-white mb-3 group-hover:text-crypto-primary transition-colors leading-snug">{post.data.title}</h4>
+                                <p class="text-crypto-muted text-sm line-clamp-3 mb-6 flex-grow">{post.data.description}</p>
+                                <div class="flex items-center justify-between text-xs font-mono text-crypto-text mt-auto pt-4 border-t border-crypto-border/50">
+                                    <span>{post.data.pubDate.toLocaleDateString('en-us', { month: 'short', day: 'numeric', year: 'numeric'})}</span>
+                                    <span class="text-crypto-primary">{post.data.readTime}</span>
+                                </div>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            </section>
+        )}
+    </div>
+</Layout>
